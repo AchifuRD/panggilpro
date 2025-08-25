@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profil Saya | PanggilPro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <style>
+    body, html { font-family: 'Inter', sans-serif; }
+    .btn-primary {
+      background-color: #0A5E2A;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .input-field {
+      @apply w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500;
+    }
+    .avatar-upload {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+    }
+    .avatar-upload img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #f1f1f1;
+    }
+    .avatar-upload .edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: #F8C400;
+      color: #0A5E2A;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    #file-upload { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <header class="bg-white shadow-sm px-4 py-3 flex justify-between items-center sticky top-0 z-10">
+    <a href="index.html" class="text-green-700 font-medium">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <h1 class="text-xl font-bold text-green-900">PanggilPro</h1>
+    <button onclick="toggleLanguage()" id="lang-toggle" class="text-sm font-medium text-green-700 px-3 py-1 rounded-full border">
+      EN
+    </button>
+  </header>
+
+  <section class="px-4 py-6 bg-white border-b">
+    <h2 class="text-2xl font-bold mb-2">Profil Saya</h2>
+    <p class="text-gray-600">Urus maklumat akaun anda</p>
+  </section>
+
+  <section class="px-4 py-6 space-y-6">
+    <div class="text-center">
+      <label class="block text-sm font-medium mb-2">Foto Profil</label>
+      <div class="avatar-upload" onclick="uploadPhoto()">
+        <img id="avatar-img" src="https://ui-avatars.com/api/?name=User&background=0A5E2A&color=fff" alt="Profile Photo">
+        <div class="edit">
+          <i class="fas fa-pen"></i>
+        </div>
+      </div>
+      <button type="button" class="btn-primary text-xs px-3 py-1 mt-2" onclick="uploadPhoto()">
+        <i class="fas fa-upload"></i> Muat Naik Foto
+      </button>
+      <input type="file" accept="image/*" id="file-upload">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Nama Penuh</label>
+      <input type="text" id="name-input" class="input-field" placeholder="Ali bin Ahmad" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Nombor Telefon</label>
+      <input type="tel" id="phone-input" class="input-field" placeholder="+6012 345 6789" />
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Emel</label>
+      <input type="email" id="email-input" class="input-field" disabled />
+    </div>
+
+    <button onclick="saveProfile()" class="btn-primary w-full mt-6">Simpan Perubahan</button>
+  </section>
+
+  <div class="h-16"></div>
+
+  <script>
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    let currentLang = 'ms';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('lang-toggle').textContent = lang === 'ms' ? 'EN' : 'MS';
+      localStorage.setItem('panggilpro-lang', lang);
+    }
+
+    function toggleLanguage() {
+      const newLang = currentLang === 'ms' ? 'en' : 'ms';
+      setLanguage(newLang);
+    }
+
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = 'index.html';
+        return;
+      }
+      loadProfile(user);
+    });
+
+    async function loadProfile(user) {
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      const data = userDoc.data();
+
+      document.getElementById('name-input').value = data?.displayName || '';
+      document.getElementById('phone-input').value = data?.phone || '';
+      document.getElementById('email-input').value = data?.email || user.email;
+
+      const photoURL = data?.photoURL || user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(data?.displayName || 'User')}&background=0A5E2A&color=fff`;
+      document.getElementById('avatar-img').src = photoURL;
+    }
+
+    function uploadPhoto() {
+      const fileInput = document.getElementById('file-upload');
+      fileInput.onchange = async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(f) {
+          const imgData = f.target.result;
+          const fileRef = storage.ref().child(`profile-photos/${auth.currentUser.uid}.jpg`);
+          await fileRef.putString(imgData, 'data_url');
+          const downloadURL = await fileRef.getDownloadURL();
+
+          await db.collection('users').doc(auth.currentUser.uid).update({ photoURL: downloadURL });
+          document.getElementById('avatar-img').src = downloadURL;
+          alert("Foto profil berjaya dikemaskini!");
+        };
+        reader.readAsDataURL(file);
+      };
+      fileInput.click();
+    }
+
+    async function saveProfile() {
+      const name = document.getElementById('name-input').value.trim();
+      const phone = document.getElementById('phone-input').value.trim();
+
+      await db.collection('users').doc(auth.currentUser.uid).update({ displayName: name, phone });
+      await auth.currentUser.updateProfile({ displayName: name });
+
+      alert("Profil berjaya disimpan!");
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem('panggilpro-lang');
+      setLanguage(saved || 'ms');
+    };
+  </script>
+</body>
+</html>

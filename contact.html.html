@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hubungi Kami | PanggilPro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body, html { font-family: 'Inter', sans-serif; }
+    .btn-primary {
+      background-color: #0A5E2A;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #0A5E2A;
+      color: #0A5E2A;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .contact-card {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .input-field {
+      @apply w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500;
+    }
+    .textarea-field {
+      @apply w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500;
+      min-height: 120px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <header class="bg-white shadow-sm px-4 py-3 flex justify-between items-center sticky top-0 z-10">
+    <a href="index.html" class="text-green-700 font-medium">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <h1 class="text-xl font-bold text-green-900">PanggilPro</h1>
+    <span class="text-sm">MS</span>
+  </header>
+
+  <div class="px-4 py-6">
+    <h1 class="text-2xl font-bold mb-2">Hubungi Kami</h1>
+    <p class="text-gray-600 mb-6">Kami sedia membantu. Hubungi kami untuk sokongan atau maklum balas.</p>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Form -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Hantar Mesej Kepada Kami</h2>
+        <form class="space-y-4" onsubmit="alert('Mesej dihantar!'); return false;">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nama Penuh</label>
+            <input type="text" required class="input-field" placeholder="Ali bin Ahmad" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Alamat Emel</label>
+            <input type="email" required class="input-field" placeholder="ali@email.com" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Nombor Telefon</label>
+            <input type="tel" class="input-field" placeholder="+6012 345 6789" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Mesej Anda</label>
+            <textarea required class="textarea-field" placeholder="Apa yang boleh kami bantu?"></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Hantar Mesej</button>
+        </form>
+      </div>
+
+      <!-- Info -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4">Maklumat Hubungan</h2>
+
+        <div class="contact-card">
+          <h3 class="font-medium text-gray-800">Telefon</h3>
+          <p class="text-green-700 font-semibold">+603-1234 5678</p>
+        </div>
+
+        <div class="contact-card">
+          <h3 class="font-medium text-gray-800">Emel</h3>
+          <p class="text-green-700 font-semibold">bantuan@panggilpro.my</p>
+        </div>
+
+        <div class="contact-card">
+          <h3 class="font-medium text-gray-800">Alamat Pejabat</h3>
+          <p class="text-gray-700">Aras 3, Menara Perniagaan Bangsar, Jalan Bangsar, 59000 Kuala Lumpur</p>
+        </div>
+
+        <div class="contact-card">
+          <h3 class="font-medium text-gray-800">Waktu Perniagaan</h3>
+          <p class="text-gray-700">Isnin-Jumaat, 9PG - 6PTG</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="index.html" class="btn-outline">Kembali ke Laman Utama</a>
+    </div>
+  </div>
+
+  <div class="h-16"></div>
+</body>
+</html>

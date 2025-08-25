@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pilih Servis | PanggilPro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    body, html { font-family: 'Inter', sans-serif; }
+    .service-card { transition: all 0.2s; border-radius: 16px; border: 1px solid #e0e0e0; }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .btn-primary { background-color: #0A5E2A; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; }
+    .category-icon { width: 60px; height: 60px; background-color: #e8f5e9; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen" id="page">
+  <header class="bg-white shadow-sm px-4 py-3 flex justify-between items-center sticky top-0 z-10">
+    <a href="index.html" class="text-green-700 font-medium"><i class="fas fa-arrow-left"></i></a>
+    <h1 class="text-xl font-bold text-green-900">PanggilPro</h1>
+    <span class="text-sm">MS</span>
+  </header>
+  <section class="px-4 py-6 bg-white border-b">
+    <h2 class="text-2xl font-bold mb-2">Pilih Servis</h2>
+    <p class="text-gray-600">Pilih kategori untuk cari pro yang sesuai</p>
+  </section>
+  <section class="px-4 py-6 space-y-4">
+    <div class="service-card bg-white p-5 shadow-sm" onclick="location.href='pro-list.html'">
+      <div class="flex items-center space-x-4">
+        <div class="category-icon">
+          <i class="fas fa-broom text-green-700 text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-lg">Perapi Rumah</h3>
+          <p class="text-gray-500 text-sm">Bersihkan rumah, pejabat, atau kondo</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-400"></i>
+      </div>
+    </div>
+    <div class="service-card bg-white p-5 shadow-sm" onclick="location.href='pro-list.html'">
+      <div class="flex items-center space-x-4">
+        <div class="category-icon" style="background-color: #e3f2fd;">
+          <i class="fas fa-wrench text-blue-700 text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-lg">Tukang Paip</h3>
+          <p class="text-gray-500 text-sm">Paip bocor, longkang tersumbat, dll</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-400"></i>
+      </div>
+    </div>
+  </section>
+  <div class="px-4 py-6">
+    <button onclick="location.href='pro-list.html'" class="btn-primary w-full">Seterusnya</button>
+  </div>
+  <div class="h-16"></div>
+</body>
+</html>
