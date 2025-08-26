@@ -3,57 +3,180 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pilih Servis | PanggilPro</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title data-translate="title">PanggilPro - Panggil Pro, Datang Terus!</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <style>
-    body, html { font-family: 'Inter', sans-serif; }
-    .service-card { transition: all 0.2s; border-radius: 16px; border: 1px solid #e0e0e0; }
-    .service-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .btn-primary { background-color: #0A5E2A; color: white; padding: 12px 20px; border-radius: 12px; font-weight: 600; }
-    .category-icon { width: 60px; height: 60px; background-color: #e8f5e9; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-  </style>
+  <link rel="stylesheet" href="src/css/styles.css">
+  <script src="src/js/main.js" type="module" defer></script>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen" id="page">
-  <header class="bg-white shadow-sm px-4 py-3 flex justify-between items-center sticky top-0 z-10">
-    <a href="index.html" class="text-green-700 font-medium"><i class="fas fa-arrow-left"></i></a>
-    <h1 class="text-xl font-bold text-green-900">PanggilPro</h1>
-    <span class="text-sm">MS</span>
+<body>
+  <header class="header">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 bg-gradient-to-r from-green-700 to-yellow-500 rounded-xl flex items-center justify-center shadow">
+        <span class="text-white font-extrabold text-sm">PP</span>
+      </div>
+      <h1 class="header-title">PanggilPro</h1>
+    </div>
+    <button onclick="PanggilPro.toggleLanguage()" class="btn btn-sm btn-outline">
+      <span x-text="PanggilPro.currentLang === 'ms' ? 'EN' : 'MS'">EN</span>
+    </button>
   </header>
-  <section class="px-4 py-6 bg-white border-b">
-    <h2 class="text-2xl font-bold mb-2">Pilih Servis</h2>
-    <p class="text-gray-600">Pilih kategori untuk cari pro yang sesuai</p>
-  </section>
-  <section class="px-4 py-6 space-y-4">
-    <div class="service-card bg-white p-5 shadow-sm" onclick="location.href='pro-list.html'">
-      <div class="flex items-center space-x-4">
-        <div class="category-icon">
-          <i class="fas fa-broom text-green-700 text-2xl"></i>
-        </div>
-        <div class="flex-1">
-          <h3 class="font-semibold text-lg">Perapi Rumah</h3>
-          <p class="text-gray-500 text-sm">Bersihkan rumah, pejabat, atau kondo</p>
-        </div>
-        <i class="fas fa-chevron-right text-gray-400"></i>
-      </div>
-    </div>
-    <div class="service-card bg-white p-5 shadow-sm" onclick="location.href='pro-list.html'">
-      <div class="flex items-center space-x-4">
-        <div class="category-icon" style="background-color: #e3f2fd;">
-          <i class="fas fa-wrench text-blue-700 text-2xl"></i>
-        </div>
-        <div class="flex-1">
-          <h3 class="font-semibold text-lg">Tukang Paip</h3>
-          <p class="text-gray-500 text-sm">Paip bocor, longkang tersumbat, dll</p>
-        </div>
-        <i class="fas fa-chevron-right text-gray-400"></i>
-      </div>
-    </div>
-  </section>
-  <div class="px-4 py-6">
-    <button onclick="location.href='pro-list.html'" class="btn-primary w-full">Seterusnya</button>
+
+  <div class="location-banner">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Kuala Lumpur • Ubah Lokasi</span>
   </div>
-  <div class="h-16"></div>
+
+  <section class="px-4 sm:px-6 md:px-8 py-6 bg-white">
+    <div class="text-center mb-6">
+      <h2 class="text-3xl font-bold mb-2 leading-tight" data-translate="selectService">Pilih Servis</h2>
+      <p class="text-neutral-600 mb-6" data-translate="chooseCategory">Pilih kategori untuk cari pro yang sesuai</p>
+      
+      <div class="search-container">
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Cari servis: plumber, tutor, cleaner..."
+          data-translate-placeholder="searchPlaceholder"
+        />
+        <i class="search-icon fas fa-search"></i>
+        <span class="search-badge">RM</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 sm:px-6 md:px-8 py-6">
+    <h3 class="text-xl font-semibold mb-6">Servis Popular</h3>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.1s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-broom text-primary-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1" data-translate="houseCleaning">Perapi Rumah</h3>
+              <p class="text-neutral-500 text-sm mb-2" data-translate="cleaningDesc">Bersihkan rumah, pejabat, atau kondo</p>
+              <span class="text-primary-700 font-medium text-sm">RM50-80/sesi</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.2s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-wrench text-blue-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1" data-translate="plumber">Tukang Paip</h3>
+              <p class="text-neutral-500 text-sm mb-2" data-translate="plumberDesc">Paip bocor, longkang tersumbat, dll</p>
+              <span class="text-primary-700 font-medium text-sm">RM40-60/jam</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.3s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-bolt text-yellow-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1">Elektrik</h3>
+              <p class="text-neutral-500 text-sm mb-2">Wiring, suis rosak, lampu</p>
+              <span class="text-primary-700 font-medium text-sm">RM45-70/jam</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.4s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-cyan-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-snowflake text-cyan-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1">Aircond</h3>
+              <p class="text-neutral-500 text-sm mb-2">Servis, cuci, repair aircond</p>
+              <span class="text-primary-700 font-medium text-sm">RM80-120/servis</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.5s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-user-graduate text-purple-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1">Tuisyen</h3>
+              <p class="text-neutral-500 text-sm mb-2">Matematik, Sains, Bahasa</p>
+              <span class="text-primary-700 font-medium text-sm">RM30-50/jam</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card service-card animate-fade-in" onclick="location.href='pro-list.html'" style="animation-delay: 0.6s">
+        <div class="card-body">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center">
+              <i class="fas fa-spa text-pink-700 text-2xl"></i>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg mb-1">Urut</h3>
+              <p class="text-neutral-500 text-sm mb-2">Urut tradisional, refleksologi</p>
+              <span class="text-primary-700 font-medium text-sm">RM60-100/sesi</span>
+            </div>
+            <i class="fas fa-chevron-right text-neutral-400"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <button onclick="location.href='pro-list.html'" class="btn btn-primary btn-lg">
+        <span data-translate="next">Seterusnya</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <button class="fab no-print" onclick="location.href='service-select.html'">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <nav class="bottom-nav no-print">
+    <a href="index.html" class="nav-item active">
+      <i class="nav-icon fas fa-home"></i>
+      <span>Utama</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="nav-icon fas fa-search"></i>
+      <span>Cari</span>
+    </a>
+    <a href="booking-history.html" class="nav-item">
+      <i class="nav-icon fas fa-history"></i>
+      <span>Tempahan</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <i class="nav-icon fas fa-user"></i>
+      <span>Akaun</span>
+    </a>
+  </nav>
+
+  <div style="height: 100px;"></div>
 </body>
 </html>
