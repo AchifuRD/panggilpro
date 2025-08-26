@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Akaun | PanggilPro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="src/css/styles.css">
+  <script src="src/js/main.js" type="module" defer></script>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-secondary-50">
+  <div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="card w-full max-w-md">
+      <div class="card-body">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-gradient-to-r from-primary-700 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <span class="text-white font-extrabold text-xl">PP</span>
+          </div>
+          <h1 class="text-2xl font-bold text-neutral-800 mb-2">Cipta Akaun Baru</h1>
+          <p class="text-neutral-600">Sertai PanggilPro dan dapatkan perkhidmatan terbaik</p>
+        </div>
+
+        <form id="register-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Nama Penuh</label>
+            <input 
+              type="text" 
+              id="fullName" 
+              required 
+              class="input-field" 
+              placeholder="Ali bin Ahmad"
+              autocomplete="name"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Nombor Telefon</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              required 
+              class="input-field" 
+              placeholder="+6012 345 6789"
+              autocomplete="tel"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Alamat Emel</label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              class="input-field" 
+              placeholder="contoh@email.com"
+              autocomplete="email"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Kata Laluan</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="password" 
+                required 
+                class="input-field pr-12" 
+                placeholder="Minimum 6 aksara"
+                autocomplete="new-password"
+                minlength="6"
+              />
+              <button 
+                type="button" 
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                onclick="togglePassword('password')"
+              >
+                <i class="fas fa-eye" id="password-toggle"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Sahkan Kata Laluan</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                required 
+                class="input-field pr-12" 
+                placeholder="Ulang kata laluan"
+                autocomplete="new-password"
+              />
+              <button 
+                type="button" 
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                onclick="togglePassword('confirmPassword')"
+              >
+                <i class="fas fa-eye" id="confirmPassword-toggle"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <input type="checkbox" id="terms" required class="mt-1 rounded border-neutral-300 text-primary-600 focus:ring-primary-500">
+            <label for="terms" class="ml-2 text-sm text-neutral-600">
+              Saya bersetuju dengan 
+              <a href="terms.html" class="text-primary-600 hover:text-primary-700">Syarat Perkhidmatan</a> 
+              dan 
+              <a href="privacy.html" class="text-primary-600 hover:text-primary-700">Dasar Privasi</a>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full" id="register-btn">
+            <span>Cipta Akaun</span>
+            <i class="fas fa-user-plus"></i>
+          </button>
+
+          <div class="text-center">
+            <p class="text-sm text-neutral-600">
+              Sudah ada akaun? 
+              <a href="login.html" class="text-primary-600 hover:text-primary-700 font-medium">Log masuk</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { registerUser } from './src/js/firebase.js';
+
+    const registerForm = document.getElementById('register-form');
+    const registerBtn = document.getElementById('register-btn');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const fullName = document.getElementById('fullName').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Validate passwords match
+      if (password !== confirmPassword) {
+        alert('Kata laluan tidak sepadan');
+        return;
+      }
+
+      // Show loading state
+      registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang mendaftar...';
+      registerBtn.disabled = true;
+
+      try {
+        await registerUser(email, password, fullName, phone);
+        alert('Akaun berjaya dicipta! Sila log masuk.');
+        window.location.href = 'login.html';
+      } catch (error) {
+        alert('Ralat pendaftaran: ' + error.message);
+        registerBtn.innerHTML = '<span>Cipta Akaun</span><i class="fas fa-user-plus"></i>';
+        registerBtn.disabled = false;
+      }
+    });
+
+    window.togglePassword = (inputId) => {
+      const input = document.getElementById(inputId);
+      const toggle = document.getElementById(inputId + '-toggle');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggle.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        toggle.className = 'fas fa-eye';
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Log Masuk | PanggilPro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="src/css/styles.css">
+  <script src="src/js/main.js" type="module" defer></script>
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-secondary-50">
+  <div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="card w-full max-w-md">
+      <div class="card-body">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-gradient-to-r from-primary-700 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <span class="text-white font-extrabold text-xl">PP</span>
+          </div>
+          <h1 class="text-2xl font-bold text-neutral-800 mb-2">Selamat Kembali</h1>
+          <p class="text-neutral-600">Log masuk ke akaun PanggilPro anda</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Alamat Emel</label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              class="input-field" 
+              placeholder="contoh@email.com"
+              autocomplete="email"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-neutral-700 mb-2">Kata Laluan</label>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="password" 
+                required 
+                class="input-field pr-12" 
+                placeholder="Masukkan kata laluan"
+                autocomplete="current-password"
+              />
+              <button 
+                type="button" 
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                onclick="togglePassword('password')"
+              >
+                <i class="fas fa-eye" id="password-toggle"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label class="flex items-center">
+              <input type="checkbox" class="rounded border-neutral-300 text-primary-600 focus:ring-primary-500">
+              <span class="ml-2 text-sm text-neutral-600">Ingat saya</span>
+            </label>
+            <a href="#" class="text-sm text-primary-600 hover:text-primary-700">Lupa kata laluan?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full" id="login-btn">
+            <span>Log Masuk</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+
+          <div class="text-center">
+            <p class="text-sm text-neutral-600">
+              Belum ada akaun? 
+              <a href="register.html" class="text-primary-600 hover:text-primary-700 font-medium">Daftar sekarang</a>
+            </p>
+          </div>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-neutral-200">
+          <div class="text-center">
+            <p class="text-xs text-neutral-500 mb-4">Atau log masuk dengan</p>
+            <div class="flex gap-3 justify-center">
+              <button class="btn btn-outline flex-1" onclick="loginWithGoogle()">
+                <i class="fab fa-google"></i>
+                Google
+              </button>
+              <button class="btn btn-outline flex-1" onclick="loginWithFacebook()">
+                <i class="fab fa-facebook"></i>
+                Facebook
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loginUser } from './src/js/firebase.js';
+
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('login-btn');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Show loading state
+      loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sedang log masuk...';
+      loginBtn.disabled = true;
+
+      try {
+        await loginUser(email, password);
+        window.location.href = 'index.html';
+      } catch (error) {
+        alert('Ralat log masuk: ' + error.message);
+        loginBtn.innerHTML = '<span>Log Masuk</span><i class="fas fa-arrow-right"></i>';
+        loginBtn.disabled = false;
+      }
+    });
+
+    window.togglePassword = (inputId) => {
+      const input = document.getElementById(inputId);
+      const toggle = document.getElementById(inputId + '-toggle');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggle.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        toggle.className = 'fas fa-eye';
+      }
+    };
+
+    window.loginWithGoogle = () => {
+      alert('Google login akan dilaksanakan tidak lama lagi');
+    };
+
+    window.loginWithFacebook = () => {
+      alert('Facebook login akan dilaksanakan tidak lama lagi');
+    };
+  </script>
+</body>
+</html>

@@ -1,15 +1,22 @@
 // Main JavaScript functionality
 import Alpine from 'alpinejs'
+import { auth, onAuthStateChanged } from './firebase.js'
+import LocationService from './location.js'
+import sharingService from './sharing.js'
 
 // Initialize Alpine.js
 window.Alpine = Alpine
 Alpine.start()
 
+// Initialize services
+window.locationService = LocationService;
+window.sharingService = sharingService;
+
 // Global app state
 window.PanggilPro = {
   currentLang: 'ms',
   user: null,
-  location: 'Kuala Lumpur',
+  location: null,
   
   // Language system
   translations: {
@@ -139,6 +146,42 @@ window.PanggilPro = {
       this.currentLang = savedLang;
     }
     this.updatePageLanguage();
+    this.initializeAuth();
+    this.loadSavedLocation();
+  },
+
+  // Initialize authentication
+  initializeAuth() {
+    onAuthStateChanged(auth, (user) => {
+      this.user = user;
+      this.updateAuthUI();
+    });
+  },
+
+  // Update UI based on auth state
+  updateAuthUI() {
+    const authButtons = document.querySelectorAll('[data-auth-required]');
+    const guestButtons = document.querySelectorAll('[data-guest-only]');
+    
+    authButtons.forEach(btn => {
+      btn.style.display = this.user ? 'block' : 'none';
+    });
+    
+    guestButtons.forEach(btn => {
+      btn.style.display = this.user ? 'none' : 'block';
+    });
+  },
+
+  // Load saved location
+  loadSavedLocation() {
+    const saved = localStorage.getItem('selectedLocation');
+    if (saved) {
+      this.location = JSON.parse(saved);
+      const locationElement = document.getElementById('current-location');
+      if (locationElement && this.location.address) {
+        locationElement.textContent = this.location.address.split(',')[0];
+      }
+    }
   },
 
   // Service categories
@@ -223,3 +266,19 @@ window.PanggilPro = {
 document.addEventListener('DOMContentLoaded', () => {
   window.PanggilPro.init();
 });
+
+// Global functions
+window.changeLocation = () => {
+  window.location.href = 'location-picker.html?return=' + encodeURIComponent(window.location.pathname);
+};
+
+window.requireAuth = (callback) => {
+  if (!window.PanggilPro.user) {
+    if (confirm('Anda perlu log masuk terlebih dahulu. Pergi ke halaman log masuk?')) {
+      window.location.href = 'login.html';
+    }
+    return false;
+  }
+  callback();
+  return true;
+};

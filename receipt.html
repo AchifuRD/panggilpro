@@ -47,9 +47,27 @@
     </div>
     <div class="grid grid-cols-2 gap-4 mt-8">
       <button onclick="window.print()" class="btn-primary w-full" style="background-color:#f8c400;color:#0A5E2A;">Cetak Resit</button>
-      <button onclick="alert('Dikongsi!')" class="btn-primary w-full">Kongsi</button>
+      <button onclick="shareBooking()" class="btn-primary w-full">Kongsi</button>
     </div>
   </section>
   <div class="h-16"></div>
+
+  <script type="module">
+    import sharingService from './src/js/sharing.js';
+
+    window.shareBooking = async () => {
+      const bookingData = {
+        id: 'B001',
+        service: 'Perapi Rumah',
+        professional: 'Raj',
+        price: 'RM70'
+      };
+      
+      const result = await sharingService.shareBooking(bookingData);
+      if (!result.success) {
+        alert('Tidak dapat berkongsi: ' + result.error);
+      }
+    };
+  </script>
 </body>
 </html>

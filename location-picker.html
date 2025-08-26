@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pilih Lokasi | PanggilPro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="src/css/styles.css">
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 1rem;
+      overflow: hidden;
+    }
+    
+    .location-search {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    .location-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--neutral-200);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      z-index: 10;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .location-suggestion {
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      border-bottom: 1px solid var(--neutral-100);
+    }
+    
+    .location-suggestion:hover {
+      background-color: var(--neutral-50);
+    }
+    
+    .location-suggestion:last-child {
+      border-bottom: none;
+    }
+    
+    .current-location-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="header-back">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <h1 class="header-title">Pilih Lokasi</h1>
+    <button onclick="saveLocation()" class="btn btn-sm btn-primary">
+      Simpan
+    </button>
+  </header>
+
+  <div class="px-4 py-6">
+    <div class="location-search">
+      <input 
+        type="text" 
+        id="location-input" 
+        class="input-field" 
+        placeholder="Cari alamat atau tempat..."
+      />
+      <div id="location-suggestions" class="location-suggestions" style="display: none;"></div>
+    </div>
+
+    <div class="relative">
+      <div id="map"></div>
+      <button class="current-location-btn" onclick="getCurrentLocation()" title="Lokasi semasa">
+        <i class="fas fa-crosshairs text-primary-600"></i>
+      </button>
+    </div>
+
+    <div class="mt-6">
+      <h3 class="font-semibold mb-4">Lokasi Terpilih</h3>
+      <div class="card">
+        <div class="card-body">
+          <div class="flex items-start gap-3">
+            <i class="fas fa-map-marker-alt text-primary-600 mt-1"></i>
+            <div>
+              <p id="selected-address" class="font-medium">Pilih lokasi pada peta</p>
+              <p id="selected-coordinates" class="text-sm text-neutral-500"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <h3 class="font-semibold mb-4">Lokasi Kegemaran</h3>
+      <div class="space-y-3" id="favorite-locations">
+        <div class="card cursor-pointer" onclick="selectFavoriteLocation(3.139, 101.6869, 'KLCC, Kuala Lumpur')">
+          <div class="card-body py-3">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-building text-neutral-400"></i>
+              <div>
+                <p class="font-medium">KLCC</p>
+                <p class="text-sm text-neutral-500">Kuala Lumpur City Centre</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card cursor-pointer" onclick="selectFavoriteLocation(3.1478, 101.6953, 'Bukit Bintang, Kuala Lumpur')">
+          <div class="card-body py-3">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-shopping-bag text-neutral-400"></i>
+              <div>
+                <p class="font-medium">Bukit Bintang</p>
+                <p class="text-sm text-neutral-500">Shopping & Entertainment</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card cursor-pointer" onclick="selectFavoriteLocation(3.1319, 101.6841, 'Mid Valley, Kuala Lumpur')">
+          <div class="card-body py-3">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-store text-neutral-400"></i>
+              <div>
+                <p class="font-medium">Mid Valley</p>
+                <p class="text-sm text-neutral-500">Mid Valley Megamall</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import LocationService from './src/js/location.js';
+
+    let selectedLocation = null;
+    let map = null;
+    let marker = null;
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await LocationService.initializeGoogleMaps();
+        initializeMap();
+        setupLocationSearch();
+      } catch (error) {
+        console.error('Failed to initialize maps:', error);
+        document.getElementById('map').innerHTML = '<div class="flex items-center justify-center h-full text-neutral-500"><p>Peta tidak dapat dimuatkan</p></div>';
+      }
+    });
+
+    function initializeMap() {
+      const defaultCenter = { lat: 3.139, lng: 101.6869 }; // KL
+      map = LocationService.createMap('map', defaultCenter, 13);
+      
+      // Add click listener to map
+      map.addListener('click', (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+        selectLocation(lat, lng);
+      });
+    }
+
+    function setupLocationSearch() {
+      const input = document.getElementById('location-input');
+      LocationService.initializeAutocomplete(input, (location) => {
+        selectLocation(location.lat, location.lng, location.address);
+        map.setCenter({ lat: location.lat, lng: location.lng });
+        map.setZoom(16);
+      });
+    }
+
+    async function selectLocation(lat, lng, address = null) {
+      selectedLocation = { lat, lng };
+      
+      // Update map
+      if (marker) marker.setMap(null);
+      marker = LocationService.addMarker({ lat, lng }, 'Lokasi Terpilih');
+      map.setCenter({ lat, lng });
+      
+      // Update UI
+      document.getElementById('selected-coordinates').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      
+      if (address) {
+        document.getElementById('selected-address').textContent = address;
+      } else {
+        try {
+          const resolvedAddress = await LocationService.getAddressFromCoordinates(lat, lng);
+          document.getElementById('selected-address').textContent = resolvedAddress;
+        } catch (error) {
+          document.getElementById('selected-address').textContent = 'Alamat tidak dapat dikenal pasti';
+        }
+      }
+    }
+
+    window.getCurrentLocation = async () => {
+      try {
+        const location = await LocationService.getCurrentLocation();
+        selectLocation(location.lat, location.lng);
+        map.setCenter(location);
+        map.setZoom(16);
+      } catch (error) {
+        alert('Tidak dapat mendapatkan lokasi semasa. Sila pastikan GPS diaktifkan.');
+      }
+    };
+
+    window.selectFavoriteLocation = (lat, lng, address) => {
+      selectLocation(lat, lng, address);
+      map.setCenter({ lat, lng });
+      map.setZoom(15);
+    };
+
+    window.saveLocation = () => {
+      if (!selectedLocation) {
+        alert('Sila pilih lokasi terlebih dahulu');
+        return;
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('selectedLocation', JSON.stringify({
+        ...selectedLocation,
+        address: document.getElementById('selected-address').textContent
+      }));
+      
+      // Redirect back
+      const returnUrl = new URLSearchParams(window.location.search).get('return') || 'index.html';
+      window.location.href = returnUrl;
+    };
+  </script>
+</body>
+</html>

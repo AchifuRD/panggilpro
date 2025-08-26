@@ -5,6 +5,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+        login: 'login.html',
+        register: 'register.html',
+        'location-picker': 'location-picker.html',
         'service-select': 'service-select.html',
         'pro-list': 'pro-list.html',
         'booking-confirm': 'booking-confirm.html',

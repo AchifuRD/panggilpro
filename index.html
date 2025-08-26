@@ -23,8 +23,11 @@
   </header>
 
   <div class="location-banner">
-    <i class="fas fa-map-marker-alt"></i>
-    <span>Kuala Lumpur • Ubah Lokasi</span>
+    <button onclick="changeLocation()" class="flex items-center gap-2 text-white hover:text-secondary-200 transition-colors">
+      <i class="fas fa-map-marker-alt"></i>
+      <span id="current-location">Kuala Lumpur</span>
+      <i class="fas fa-chevron-down text-xs"></i>
+    </button>
   </div>
 
   <section class="px-4 sm:px-6 md:px-8 py-6 bg-white">
